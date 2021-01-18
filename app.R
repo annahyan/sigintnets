@@ -150,9 +150,19 @@ server <- function(input, output) {
        #  }
         
         visNetwork(nodes, edges) %>% visIgraphLayout(layout = "layout_nicely") %>%
+            visGroups(groupname = "Ageing", color = "#97c2fc") %>%
+            visGroups(groupname ="APOBEC/AID", color = "#ffff00") %>% 
+            visGroups(groupname = "BER/HR", color = "#fb7e81") %>%
+            visGroups(groupname = "Environment", color = "#7be141") %>%
+            visGroups(groupname = "Unknown", color = "#ffc0cb") %>%
+            visGroups(groupname = "MMR", color = "#eb7df4") %>%
+            visGroups(groupname = "UV", color = "#ffa807") %>%
+            visGroups(groupname = "Polymerase", color = "#ad85e4") %>%
+            visGroups(groupname = "Technical", color = "gray") %>%
+            visGroups(groupname = "Chemo", color = "#ffc0cb") %>%
             visLegend()
         
-    })
+    }) 
 }
 
 
