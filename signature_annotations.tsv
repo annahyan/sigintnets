@@ -1,0 +1,73 @@
+Signature	Class	Description
+SBS1	Ageing	Ageing
+SBS2	APOBEC/AID	APOBEC
+SBS3	BER/HR	HR
+SBS4	Environ	Tobacco-smoking
+SBS5	Unknown	Unknown
+SBS6	MMR	MMR
+SBS7a	UV	UV
+SBS7b	UV	UV
+SBS7c	UV	UV
+SBS7d	UV	UV
+SBS8	Unknown	Unknown
+SBS9	Polymerase	PolH
+SBS10a	Polymerase	PolE
+SBS10b	Polymerase	PolE
+SBS11	Chemo	Temozolomide treatment 
+SBS12	Unknown	Unknown
+SBS13	APOBEC/AID	APOBEC
+SBS14	MMR	PolE + MMR
+SBS15	MMR	MMR
+SBS16	Unknown	Unknown
+SBS17a	Unknown	Unknown
+SBS17b	Unknown	Unknown
+SBS18	Environ	ROS
+SBS19	Unknown	Unknown
+SBS20	MMR	POLD1 + MMR
+SBS21	MMR	MMR
+SBS22	Environ	Aristolochic acid
+SBS23	Unknown	Unknown
+SBS24	Environ	Aflatoxin
+SBS25	Chemo	Chemotherapy
+SBS26	MMR	MMR
+SBS27	Technical	Technical
+SBS28	Unknown	Unknown
+SBS29	Environ	Tobacco chewing
+SBS30	BER/HR	NTHL1
+SBS31	Chemo	Platinium chemotherapy
+SBS32	Chemo	Azathioprine 
+SBS33	Unknown	Unknown
+SBS34	Unknown	Unknown
+SBS35	Chemo	Platinium chemotherapy
+SBS36	BER/HR	MUTYH
+SBS37	Unknown	Unknown
+SBS38	UV	Indirect effect of UV
+SBS39	Unknown	Unknown
+SBS40	Unknown	Unknown
+SBS41	Unknown	Unknown
+SBS42	Environ	Haloalkane exposure
+SBS43	Technical	Technical
+SBS44	MMR	MMR
+SBS45	Technical	Technical
+SBS46	Technical	Technical
+SBS47	Technical	Technical
+SBS48	Technical	Technical
+SBS49	Technical	Technical
+SBS50	Technical	Technical
+SBS51	Technical	Technical
+SBS52	Technical	Technical
+SBS53	Technical	Technical
+SBS54	Technical	Technical
+SBS55	Technical	Technical
+SBS56	Technical	Technical
+SBS57	Technical	Technical
+SBS58	Technical	Technical
+SBS59	Technical	Technical
+SBS60	Technical	Technical
+SBS84	APOBEC/AID	AID
+SBS85	APOBEC/AID	Indirect effect of AID
+SBS86	Chemo	Unknown chemotherapy exposure
+SBS87	Chemo	Thiopurine chemotherapy
+SBS88	Environ	Colibactin exposure
+SBS89	Unknown	Unknown
+SBS90	Chemo	Duocarmycin exposure

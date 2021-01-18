@@ -1,10 +1,13 @@
 library(chrwiseSignatures)
 library(ggplot2)
 library(ggraph)
+library(igraph)
+library(visNetwork)
 
 load("/home/ahakobyan/ClusterProjects/GitLab/signaturesNetwork/tcga.all.sigs.RData")
 
-
+signature_etiologies = read.delim("signature_annotations.tsv", h = T)
+table(signature_etiologies$Class)
 
 ui <- fluidPage(
     
@@ -46,8 +49,11 @@ ui <- fluidPage(
         width = NULL,
         size = NULL
     ),
+    # mainPanel( ### for plot_network function
+    #     plotOutput("networkPlot")
+    # )
     mainPanel(
-        plotOutput("networkPlot")
+        visNetworkOutput("intNetworkPlot")
     )
 )
 
@@ -65,21 +71,87 @@ server <- function(input, output) {
     #     # draw the histogram with the specified number of bins
     #     hist(x, breaks = bins, col = 'darkgray', border = 'white')
     # })
-    output$networkPlot = renderPlot({
-        
+    
+    # output$networkPlot = renderPlot({
+    #     
+    #     cor.matrix = tcga.all.sigs[[input$metric_type]]
+    #     sig_c = nrow(cor.matrix)
+    #     
+    #     if(input$metric_type == "cooc") {
+    #         threshold = 1
+    #         cor.matrix[cor.matrix > 6] = 6
+    #         
+    #         cor.matrix[ abs(cor.matrix) < 2] = 0
+    #         
+    #     } else {
+    #         threshold = 0.2
+    #     }
+    #     plot_network(cor.matrix[1:sig_c, 1:sig_c], threshold = threshold)
+    # })
+    
+    output$intNetworkPlot <- renderVisNetwork({
+        # minimal example
         cor.matrix = tcga.all.sigs[[input$metric_type]]
         sig_c = nrow(cor.matrix)
-        
+
         if(input$metric_type == "cooc") {
-            threshold = 1
+            threshold = 2
             cor.matrix[cor.matrix > 6] = 6
-            
+
             cor.matrix[ abs(cor.matrix) < 2] = 0
-            
+
         } else {
             threshold = 0.2
         }
-        plot_network(cor.matrix[1:sig_c, 1:sig_c], min_threshold = threshold)
+ 
+        graph.input = cor.matrix
+        graph.input[ abs(graph.input) < threshold ] = 0
+        
+        ## if( ! binary_matrix ) {
+        ##     graph.input[graph.input == 1] = 0
+        ## }
+        
+        diag(graph.input) = 0
+        
+        graph.input[abs(graph.input) >= threshold ] = 1
+        
+        ## cor.matrix[ abs(cor.matrix) < 0.2 ]
+        
+        sig.adjacency = graph.adjacency(graph.input)
+        
+        graph <- graph_from_data_frame(get.edgelist(sig.adjacency) )
+        
+        data = toVisNetworkData(graph)
+        
+        nodes = data$nodes
+        nodes$group = signature_etiologies[match( 
+            nodes$id, signature_etiologies$Signature), "Class"]
+        nodes$font.size = 25
+        
+        edges = data$edges
+        
+        edges$intensity = sapply( 1:length(E(graph)),
+                                  function(x) {
+                                      gends = ends(graph, x)
+                                      cor.matrix[gends[1], gends[2] ]
+                                  } )
+        
+        edges$width = abs(edges$intensity)
+        
+        
+        # if (binary_matrix | nlevels(factor(E(graph)$intensity)) == 1 ) {
+        #     edges$color = "black"
+        # } else {
+        #     
+            col.edges = c( rgb(0, 140, 160, maxColorValue = 255),
+                           rgb(210, 50, 60, maxColorValue = 255) )
+            
+            edges$color =  col.edges[ (edges$intensity > 0) + 1 ] 
+       #  }
+        
+        visNetwork(nodes, edges) %>% visIgraphLayout(layout = "layout_nicely") %>%
+            visLegend()
+        
     })
 }
 
