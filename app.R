@@ -4,57 +4,69 @@ library(ggraph)
 library(igraph)
 library(visNetwork)
 
+library(shinythemes)
+library(shinycssloaders)
+library(ggrepel)
+
 load("/home/ahakobyan/ClusterProjects/GitLab/signaturesNetwork/tcga.all.sigs.RData")
 
 signature_etiologies = read.delim("signature_annotations.tsv", h = T)
 table(signature_etiologies$Class)
 
 ui <- fluidPage(
-    
-    # Application title
-    titlePanel("Survival analysis"),
-    
-    # Sidebar with a slider input for number of bins 
-    # sidebarLayout(
-    #     sidebarPanel(
-    #         sliderInput("bins",
-    #                     "Number of bins:",
-    #                     min = 1,
-    #                     max = 50,
-    #                     value = 30)
-    #     ),
-    #     
-    #     # Show a plot of the generated distribution
-    #     mainPanel(
-    #         plotOutput("distPlot")
-    #     )
-    # )
-    selectInput(
-        inputId = "dataset",
-        label = "Choose the dataset",
-        choices = list("TCGA", "PCAWG"),
-        selected = NULL,
-        multiple = FALSE,
-        selectize = TRUE,
-        width = NULL,
-        size = NULL),
-    
-    selectInput(
-        inputId = "metric_type",
-        label = "Choose metric type",
-        choices = names(tcga.all.sigs),
-        selected = NULL,
-        multiple = FALSE,
-        selectize = TRUE,
-        width = NULL,
-        size = NULL
-    ),
-    # mainPanel( ### for plot_network function
-    #     plotOutput("networkPlot")
-    # )
-    mainPanel(
-        visNetworkOutput("intNetworkPlot")
-    )
+    navbarPage("SigIntNets", theme = shinytheme("cosmo"),
+               tabPanel("All samples", fluid = TRUE, # tags$style(button_color_css),
+                        
+                        sidebarLayout (
+                            sidebarPanel (
+                                ## Application title
+                                titlePanel("Survival analysis"),
+                                
+                                        # Sidebar with a slider input for number of bins 
+                                        # sidebarLayout(
+                                        #     sidebarPanel(
+                                        #         sliderInput("bins",
+                                        #                     "Number of bins:",
+                                        #                     min = 1,
+                                        #                     max = 50,
+                                        #                     value = 30)
+                                        #     ),
+                                        #     
+                                        #     # Show a plot of the generated distribution
+                                        #     mainPanel(
+                                        #         plotOutput("distPlot")
+                                        #     )
+                                        # )
+                                selectInput(
+                                    inputId = "dataset",
+                                    label = "Choose the dataset",
+                                    choices = list("TCGA", "PCAWG"),
+                                    selected = NULL,
+                                    multiple = FALSE,
+                                    selectize = TRUE,
+                                    width = NULL,
+                                    size = NULL),
+                                
+                                selectInput(
+                                    inputId = "metric_type",
+                                    label = "Choose metric type",
+                                    choices = names(tcga.all.sigs),
+                                    selected = NULL,
+                                    multiple = FALSE,
+                                    selectize = TRUE,
+                                    width = NULL,
+                                    size = NULL )
+                            ),
+                            ##
+                            ## Main Panel
+                            ## 
+                            mainPanel(
+                                visNetworkOutput("intNetworkPlot")
+                            )
+                                
+                        )
+                        )
+               )
 )
 
 
