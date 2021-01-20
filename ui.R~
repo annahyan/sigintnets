@@ -1,0 +1,13 @@
+ui <- fluidPage(
+    navbarPage("SigIntNets", theme = shinytheme("cosmo"),
+               ### All samples
+               tabPanel("All samples", fluid = TRUE, # tags$style(button_color_css),
+                        
+                        plotAllInteractiveUI("all_samples")
+                        ),
+               ### TCGA samples
+               tabPanel("TCGA samples", fluid = TRUE,
+                        plotTissueInteractiveUI("tissues")
+                        )
+               )
+)
