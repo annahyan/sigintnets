@@ -9,34 +9,20 @@ library(shinycssloaders)
 library(ggrepel)
 
 load("/home/ahakobyan/ClusterProjects/GitLab/signaturesNetwork/tcga.all.sigs.RData")
+load("/home/ahakobyan/ClusterProjects/GitLab/signaturesNetwork/TCGA.tissue.all.sigs.list.RData")
 
 signature_etiologies = read.delim("signature_annotations.tsv", h = T)
 table(signature_etiologies$Class)
 
 ui <- fluidPage(
     navbarPage("SigIntNets", theme = shinytheme("cosmo"),
+               ### All samples
                tabPanel("All samples", fluid = TRUE, # tags$style(button_color_css),
                         
                         sidebarLayout (
                             sidebarPanel (
                                 ## Application title
-                                titlePanel("Survival analysis"),
-                                
-                                        # Sidebar with a slider input for number of bins 
-                                        # sidebarLayout(
-                                        #     sidebarPanel(
-                                        #         sliderInput("bins",
-                                        #                     "Number of bins:",
-                                        #                     min = 1,
-                                        #                     max = 50,
-                                        #                     value = 30)
-                                        #     ),
-                                        #     
-                                        #     # Show a plot of the generated distribution
-                                        #     mainPanel(
-                                        #         plotOutput("distPlot")
-                                        #     )
-                                        # )
+                                titlePanel("Signature interactions"),
                                 selectInput(
                                     inputId = "dataset",
                                     label = "Choose the dataset",
@@ -65,41 +51,47 @@ ui <- fluidPage(
                             )
                                 
                         )
+                        ),
+               ### TCGA samples
+               tabPanel("TCGA samples", fluid = TRUE,
+                        sidebarLayout(
+                            sidebarPanel(
+                                titlePanel("Signature interactions in TCGA tissues"),
+
+                                selectInput(
+                                    inputId = "tissue",
+                                    label = "Choose the tissue",
+                                    choices = names(TCGA.tissue.all.sigs.list),
+                                    selected = NULL,
+                                    multiple = FALSE,
+                                    selectize = FALSE,
+                                    width = NULL,
+                                    size = NULL ),
+                                
+                                selectInput(
+                                    inputId = "metric_type",
+                                    label = "Choose metric type",
+                                    choices = names(TCGA.tissue.all.sigs.list[[1]]),
+                                    selected = NULL,
+                                    multiple = FALSE,
+                                    selectize = TRUE,
+                                    width = NULL,
+                                    size = NULL) 
+                            ),
+                            mainPanel(
+                                visNetworkOutput("intNetworkPlot")
+                            )
+                            
                         )
+                        )
+               
                )
 )
 
 
 
-
 # Define server logic required to draw a histogram
 server <- function(input, output) {
-    
-    # output$distPlot <- renderPlot({
-    #     # generate bins based on input$bins from ui.R
-    #     x    <- faithful[, 2]
-    #     bins <- seq(min(x), max(x), length.out = input$bins + 1)
-    #     
-    #     # draw the histogram with the specified number of bins
-    #     hist(x, breaks = bins, col = 'darkgray', border = 'white')
-    # })
-    
-    # output$networkPlot = renderPlot({
-    #     
-    #     cor.matrix = tcga.all.sigs[[input$metric_type]]
-    #     sig_c = nrow(cor.matrix)
-    #     
-    #     if(input$metric_type == "cooc") {
-    #         threshold = 1
-    #         cor.matrix[cor.matrix > 6] = 6
-    #         
-    #         cor.matrix[ abs(cor.matrix) < 2] = 0
-    #         
-    #     } else {
-    #         threshold = 0.2
-    #     }
-    #     plot_network(cor.matrix[1:sig_c, 1:sig_c], threshold = threshold)
-    # })
     
     output$intNetworkPlot <- renderVisNetwork({
         # minimal example
@@ -118,10 +110,6 @@ server <- function(input, output) {
  
         graph.input = cor.matrix
         graph.input[ abs(graph.input) < threshold ] = 0
-        
-        ## if( ! binary_matrix ) {
-        ##     graph.input[graph.input == 1] = 0
-        ## }
         
         diag(graph.input) = 0
         
@@ -151,10 +139,6 @@ server <- function(input, output) {
         edges$width = abs(edges$intensity)
         
         
-        # if (binary_matrix | nlevels(factor(E(graph)$intensity)) == 1 ) {
-        #     edges$color = "black"
-        # } else {
-        #     
             col.edges = c( rgb(0, 140, 160, maxColorValue = 255),
                            rgb(210, 50, 60, maxColorValue = 255) )
             
@@ -176,6 +160,5 @@ server <- function(input, output) {
         
     }) 
 }
-
 
 shinyApp(ui, server)
